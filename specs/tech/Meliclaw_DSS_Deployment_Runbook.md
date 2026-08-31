@@ -73,6 +73,34 @@ Expected production layout:
 /var/lib/meliclaw-dss/data
 ```
 
+## Tailnet Access
+
+The production Admin UI is exposed inside the Tailscale tailnet with Tailscale Serve. It does not publish the admin interface to the public internet.
+
+Active tailnet URL:
+
+```text
+https://vetsync-vet-br-prd.tail48dc0d.ts.net/
+```
+
+Current proxy:
+
+```bash
+tailscale serve --bg --https=443 http://127.0.0.1:23647
+```
+
+Check status:
+
+```bash
+tailscale serve status
+```
+
+Disable:
+
+```bash
+tailscale serve --https=443 off
+```
+
 Manual deploy command:
 
 ```bash
