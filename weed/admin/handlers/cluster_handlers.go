@@ -127,7 +127,7 @@ func (h *ClusterHandlers) ExportClusterVolumes(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	filename := fmt.Sprintf("seaweedfs-volumes-%s.json", export.GeneratedAt.Format("20060102-150405"))
+	filename := fmt.Sprintf("meliclaw-dss-volumes-%s.json", export.GeneratedAt.Format("20060102-150405"))
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Content-Disposition", mime.FormatMediaType("attachment", map[string]string{"filename": filename}))
 

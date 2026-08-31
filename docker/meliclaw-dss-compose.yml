@@ -1,0 +1,32 @@
+name: meliclaw-storage-management
+
+services:
+  meliclaw-dss:
+    image: meliclaw/meliclaw-dss:local
+    container_name: meliclaw-dss
+    restart: unless-stopped
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-admin}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-secret}
+      S3_BUCKET: ${S3_BUCKET:-meliclaw-dss}
+      GODEBUG: ${GODEBUG:-fips140=off}
+    ports:
+      - "127.0.0.1:17333:7333"
+      - "127.0.0.1:18333:8333"
+      - "127.0.0.1:18889:8888"
+      - "127.0.0.1:19334:9333"
+      - "127.0.0.1:19340:9340"
+      - "127.0.0.1:23647:23646"
+    volumes:
+      - meliclaw-dss-data:/data
+    command:
+      - mini
+      - -dir=/data
+    labels:
+      dev.orbstack.domains: meliclaw-dss.meliclaw-storage-management.orb.local
+      com.meliclaw.system: meliclaw-dss
+      com.meliclaw.architecture: clean-solid-dry-kiss
+
+volumes:
+  meliclaw-dss-data:
+    name: meliclaw-dss-data

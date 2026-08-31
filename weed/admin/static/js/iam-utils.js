@@ -1,5 +1,5 @@
 /**
- * Shared IAM utility functions for the SeaweedFS Admin Dashboard.
+ * Shared IAM utility functions for the Meliclaw DSS Admin Dashboard.
  */
 
 // URL prefix helper for subdirectory deployment

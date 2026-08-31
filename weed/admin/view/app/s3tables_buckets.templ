@@ -257,7 +257,7 @@ SELECT * FROM iceberg_scan('s3://my-table-bucket/my-namespace/my-table');` }
 									{ `from pyiceberg.catalog import load_catalog
 
 catalog = load_catalog(
-    name="seaweedfs",
+    name="meliclaw-dss",
     **{
         "type": "rest",
         "uri": "http://localhost:` + fmt.Sprintf("%d", data.IcebergPort) + `",

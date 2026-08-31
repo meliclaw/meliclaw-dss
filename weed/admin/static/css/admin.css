@@ -1,7 +1,28 @@
-/* SeaweedFS Dashboard Custom Styles */
+/* Meliclaw DSS Dashboard Custom Styles */
 
 :root {
     --navbar-height: 56px;
+}
+
+.navbar-brand {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+}
+
+.brand-logo {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 auto;
+}
+
+.brand-title {
+    white-space: nowrap;
+}
+
+.login-logo {
+    width: 56px;
+    height: 56px;
 }
 
 /* Link colors - muted */
@@ -331,8 +352,8 @@ main {
     .card-body {
         padding: 1rem;
     }
-    
+
     .h5 {
         font-size: 1rem;
     }
-} 
+}

@@ -1,0 +1,88 @@
+name: "meliclaw-dss: build and deploy"
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: "Deploy to Scaleway VPS after publishing image"
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  packages: read
+
+env:
+  IMAGE_NAME: rg.nl-ams.scw.cloud/meliclaw/meliclaw-dss
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version: "1.27.x"
+          cache: true
+      - name: Test admin package
+        run: go test ./weed/admin/...
+      - name: Build binary
+        run: go build -o docker/weed ./weed
+
+  build:
+    needs: verify
+    runs-on: ubuntu-24.04-arm
+    outputs:
+      image_ref: ${{ steps.digest.outputs.image_ref }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version: "1.27.x"
+          cache: true
+      - name: Build binary
+        run: go build -o docker/weed ./weed
+      - name: Login to Scaleway registry
+        uses: docker/login-action@v3
+        with:
+          registry: rg.nl-ams.scw.cloud
+          username: nologin
+          password: ${{ secrets.SCW_SECRET_KEY }}
+      - name: Build and push image
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: docker
+          file: docker/Dockerfile.local
+          platforms: linux/arm64
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.IMAGE_NAME }}:latest
+      - name: Report digest
+        id: digest
+        run: echo "image_ref=${IMAGE_NAME}@${{ steps.push.outputs.digest }}" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    needs: build
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.deploy }}
+    runs-on: ubuntu-24.04
+    environment: production
+    steps:
+      - uses: actions/checkout@v7
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          authkey: ${{ secrets.TS_AUTHKEY }}
+      - name: Blue/green release
+        env:
+          IMAGE_REF: ${{ needs.build.outputs.image_ref }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new root@100.78.234.73 \
+            "cd /opt/meliclaw-dss/current/scripts && ./deploy-web.sh '${IMAGE_REF}'"

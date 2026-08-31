@@ -1,4 +1,4 @@
-# SeaweedFS Admin Component Makefile
+# Meliclaw DSS Admin Component Makefile
 
 # Variables
 ADMIN_DIR := .
@@ -126,12 +126,12 @@ build-prod: clean generate validate-static
 .PHONY: docker-build
 docker-build: generate
 	@echo "Building Docker image with admin component..."
-	@cd $(BUILD_DIR) && docker build -t seaweedfs/seaweedfs:latest .
+	@cd $(BUILD_DIR) && docker build -t meliclaw/meliclaw-dss:latest .
 
 # Help target
 .PHONY: help
 help:
-	@echo "SeaweedFS Admin Component Makefile"
+	@echo "Meliclaw DSS Admin Component Makefile"
 	@echo ""
 	@echo "Available targets:"
 	@echo "  all              - Build the weed binary with admin component (default)"

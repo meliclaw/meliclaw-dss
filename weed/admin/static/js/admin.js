@@ -1,4 +1,4 @@
-// SeaweedFS Dashboard JavaScript
+// Meliclaw DSS Dashboard JavaScript
 
 // URL prefix helper for subdirectory deployment
 function basePath(path) {
@@ -616,7 +616,7 @@ function exportBucketList() {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `seaweedfs-buckets-${new Date().toISOString().split('T')[0]}.csv`;
+    a.download = `meliclaw-dss-buckets-${new Date().toISOString().split('T')[0]}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -706,7 +706,7 @@ function exportVolumeServers() {
         }
     });
 
-    downloadCSV(csv, 'seaweedfs-volume-servers.csv');
+    downloadCSV(csv, 'meliclaw-dss-volume-servers.csv');
 }
 
 // Export volumes data as CSV
@@ -740,7 +740,7 @@ function exportVolumes() {
         csv += rowData.join(',') + '\n';
     });
 
-    downloadCSV(csv, 'seaweedfs-volumes.csv');
+    downloadCSV(csv, 'meliclaw-dss-volumes.csv');
 }
 
 // Export the full cluster volume list (all volumes + EC shards, more fields than
@@ -787,7 +787,7 @@ function exportCollections() {
         .join('\n');
 
     // Download
-    const filename = `seaweedfs-collections-${new Date().toISOString().split('T')[0]}.csv`;
+    const filename = `meliclaw-dss-collections-${new Date().toISOString().split('T')[0]}.csv`;
     downloadCSV(csvContent, filename);
 }
 
@@ -821,7 +821,7 @@ function exportMasters() {
         .join('\n');
 
     // Download
-    const filename = `seaweedfs-masters-${new Date().toISOString().split('T')[0]}.csv`;
+    const filename = `meliclaw-dss-masters-${new Date().toISOString().split('T')[0]}.csv`;
     downloadCSV(csvContent, filename);
 }
 
@@ -857,7 +857,7 @@ function exportFilers() {
         .join('\n');
 
     // Download
-    const filename = `seaweedfs-filers-${new Date().toISOString().split('T')[0]}.csv`;
+    const filename = `meliclaw-dss-filers-${new Date().toISOString().split('T')[0]}.csv`;
     downloadCSV(csvContent, filename);
 }
 
@@ -891,7 +891,7 @@ function exportUsers() {
         }
     });
 
-    downloadCSV(csvContent, 'seaweedfs-users.csv');
+    downloadCSV(csvContent, 'meliclaw-dss-users.csv');
 }
 
 // Confirm delete collection
@@ -1334,7 +1334,7 @@ function exportFileList() {
         .join('\n');
 
     // Download
-    const filename = `seaweedfs-files-${new Date().toISOString().split('T')[0]}.csv`;
+    const filename = `meliclaw-dss-files-${new Date().toISOString().split('T')[0]}.csv`;
     downloadCSV(csvContent, filename);
 }
 

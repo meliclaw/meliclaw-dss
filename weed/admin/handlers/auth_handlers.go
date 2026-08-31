@@ -49,7 +49,7 @@ func (a *AuthHandlers) ShowLogin(w http.ResponseWriter, r *http.Request) {
 
 	// Render login template
 	w.Header().Set("Content-Type", "text/html")
-	loginComponent := layout.LoginForm("SeaweedFS Admin", errorMessage, csrfToken)
+	loginComponent := layout.LoginForm("Meliclaw DSS Admin", errorMessage, csrfToken)
 	if err := loginComponent.Render(r.Context(), w); err != nil {
 		writeJSONError(w, http.StatusInternalServerError, "Failed to render login template: "+err.Error())
 		return

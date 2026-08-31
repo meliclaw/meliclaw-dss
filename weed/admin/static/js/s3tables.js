@@ -1,5 +1,5 @@
 /**
- * Shared S3 Tables functionality for the SeaweedFS Admin Dashboard.
+ * Shared S3 Tables functionality for the Meliclaw DSS Admin Dashboard.
  */
 
 // URL prefix helper for subdirectory deployment
