@@ -8,7 +8,7 @@ This document is the operational contract for deploying Meliclaw Distributed Sto
 - Local runtime: Docker/OrbStack project `meliclaw-storage-management`
 - Local container: `meliclaw-dss`
 - Production host: Scaleway VPS reachable through Tailscale at `root@100.78.234.73`
-- Registry target: Scaleway Container Registry `rg.nl-ams.scw.cloud/meliclaw/meliclaw-dss`
+- Registry target: Scaleway Container Registry `rg.nl-ams.scw.cloud/vetsync/meliclaw-dss`
 - Architecture guardrails: Clean Architecture, SOLID, DRY, KISS
 - Methodology: SDD/OpenSpec/onp-spec discipline for deploy changes
 
@@ -77,7 +77,7 @@ Manual deploy command:
 
 ```bash
 ssh root@100.78.234.73 \
-  "cd /opt/meliclaw-dss/current/scripts && ./deploy-web.sh rg.nl-ams.scw.cloud/meliclaw/meliclaw-dss@sha256:<digest>"
+  "cd /opt/meliclaw-dss/current/scripts && ./deploy-web.sh rg.nl-ams.scw.cloud/vetsync/meliclaw-dss@sha256:<digest>"
 ```
 
 ## Blue/Green Ports

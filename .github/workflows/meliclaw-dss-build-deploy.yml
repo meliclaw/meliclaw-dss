@@ -17,7 +17,7 @@ permissions:
   security-events: write
 
 env:
-  IMAGE_NAME: rg.nl-ams.scw.cloud/meliclaw/meliclaw-dss
+  IMAGE_NAME: rg.nl-ams.scw.cloud/vetsync/meliclaw-dss
 
 jobs:
   verify:
