@@ -42,7 +42,7 @@ verify -> build -> deploy
 ```
 
 - `verify`: runs admin tests and builds the Go binary.
-- `build`: creates and pushes a `linux/arm64` image to Scaleway Container Registry, then scans it with Trivy.
+- `build`: creates and pushes a `linux/arm64` image to Scaleway Container Registry for the Scaleway VPS, then scans it with Trivy.
 - `deploy`: manual only, gated by `workflow_dispatch deploy=true`, then connects through Tailscale and runs the VPS blue/green script.
 
 Required GitHub secrets:

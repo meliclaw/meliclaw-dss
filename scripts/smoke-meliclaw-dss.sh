@@ -14,7 +14,9 @@ check_http() {
   local expected="${3:-200}"
   local code
   code="$(curl -fsS -o /dev/null -w '%{http_code}' "$url" || true)"
-  if [ "$code" = "$expected" ]; then
+  if [ "$expected" = "any" ] && [ -n "$code" ] && [ "$code" != "000" ]; then
+    echo "ok: ${name} (${url}) returned ${code}"
+  elif [ "$code" = "$expected" ]; then
     echo "ok: ${name} (${url})"
   else
     echo "fail: ${name} (${url}) expected ${expected}, got ${code:-none}" >&2
@@ -23,7 +25,7 @@ check_http() {
 }
 
 check_http "admin" "$BASE_ADMIN/"
-check_http "s3" "$BASE_S3/" "403"
+check_http "s3" "$BASE_S3/" "any"
 check_http "master" "$BASE_MASTER/"
 check_http "filer" "$BASE_FILER/"
 

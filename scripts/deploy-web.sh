@@ -74,7 +74,11 @@ BASE_ADMIN="http://127.0.0.1:${host_admin_port}" \
 BASE_S3="http://127.0.0.1:${host_s3_port}" \
 BASE_MASTER="http://127.0.0.1:${host_master_port}" \
 BASE_FILER="http://127.0.0.1:${host_filer_port}" \
-  "${ROOT_DIR}/current/scripts/smoke-meliclaw-dss.sh"
+  "${ROOT_DIR}/current/scripts/smoke-meliclaw-dss.sh" || {
+    echo "smoke failed: removing candidate ${next_container}" >&2
+    docker rm -f "$next_container" >/dev/null 2>&1 || true
+    exit 1
+  }
 
 echo "$next_color" > "$ROOT_DIR/current-color"
 cat > "$LIVE_PORTS_DIR/current.env" <<PORTS

@@ -45,7 +45,7 @@ jobs:
           go-version: "1.27.x"
           cache: true
       - name: Build binary
-        run: go build -o docker/weed ./weed
+        run: CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o docker/weed ./weed
       - name: Login to Scaleway registry
         uses: docker/login-action@v4
         with:
