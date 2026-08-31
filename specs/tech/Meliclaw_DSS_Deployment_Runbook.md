@@ -42,7 +42,7 @@ verify -> build -> deploy
 ```
 
 - `verify`: runs admin tests and builds the Go binary.
-- `build`: creates and pushes `linux/arm64` image to Scaleway Container Registry.
+- `build`: creates and pushes a `linux/arm64` image to Scaleway Container Registry, then scans it with Trivy.
 - `deploy`: manual only, gated by `workflow_dispatch deploy=true`, then connects through Tailscale and runs the VPS blue/green script.
 
 Required GitHub secrets:
@@ -52,6 +52,15 @@ Required GitHub secrets:
 | `SCW_SECRET_KEY` | Scaleway Container Registry login |
 | `TS_AUTHKEY` | Tailscale auth key for the GitHub runner |
 | `DEPLOY_SSH_KEY` | Private SSH key accepted by the VPS |
+
+## Image Security Scan
+
+The build job runs `aquasecurity/trivy-action@v0.36.0` against the immutable image digest that was just pushed.
+
+- Platform is pinned with `TRIVY_PLATFORM=linux/arm64`.
+- Scan covers OS and library vulnerabilities.
+- `CRITICAL` and `HIGH` vulnerabilities fail the build.
+- `ignore-unfixed=true` avoids blocking on issues that do not yet have an upstream fix.
 
 ## VPS Layout
 
@@ -99,3 +108,4 @@ Failure aborts deployment before the old color is removed.
 - AC-004: CI MUST publish an immutable image reference by digest.
 - AC-005: Deployment MUST happen over Tailscale SSH to the Scaleway VPS.
 - AC-006: Operational scripts MUST stay small, explicit, and testable.
+- AC-007: CI MUST run Trivy against the pushed image digest before deployment.
