@@ -12,11 +12,10 @@
 
 ![SeaweedFS Logo](https://raw.githubusercontent.com/seaweedfs/seaweedfs/master/note/seaweedfs.png)
 
-<h2 align="center"><a href="https://www.patreon.com/seaweedfs">Sponsor SeaweedFS via Patreon</a></h2>
 
-SeaweedFS is an independent Apache-licensed open source project with its ongoing development made
+Meliclaw DSS is an independent Apache-licensed open source project with its ongoing development made
 possible entirely thanks to the support of these awesome [backers](https://github.com/seaweedfs/seaweedfs/blob/master/backers.md).
-If you'd like to grow SeaweedFS even stronger, please consider joining our
+If you'd like to grow Meliclaw DSS even stronger, please consider joining our
 <a href="https://www.patreon.com/seaweedfs">sponsors on Patreon</a>.
 
 Your support will be really appreciated by me and other supporters!
@@ -102,7 +101,7 @@ The same command starts everything else too:
 
 > macOS: if the binary is quarantined, run `xattr -d com.apple.quarantine ./weed` first.
 
-Perfect for development, testing, learning SeaweedFS, and single-node deployments. To scale out, add more volume servers by running `weed volume -dir="/some/data/dir2" -master="<master_host>:9333" -port=8081` locally, on another machine, or on thousands of machines.
+Perfect for development, testing, learning Meliclaw DSS, and single-node deployments. To scale out, add more volume servers by running `weed volume -dir="/some/data/dir2" -master="<master_host>:9333" -port=8081` locally, on another machine, or on thousands of machines.
 
 ## Quick Start for S3 API on Docker ##
 
@@ -118,12 +117,12 @@ Same behavior as the `weed mini` command above — the S3 endpoint is at http://
 
 # Introduction #
 
-SeaweedFS is a simple and highly scalable distributed file system. There are two objectives:
+Meliclaw DSS is a simple and highly scalable distributed file system. There are two objectives:
 
 1. to store billions of files!
 2. to serve the files fast!
 
-SeaweedFS started as a blob store to handle small files efficiently. 
+Meliclaw DSS started as a blob store to handle small files efficiently. 
 Instead of managing all file metadata in a central master, 
 the central master only manages volumes on volume servers, 
 and these volume servers manage files and their metadata. 
@@ -133,21 +132,21 @@ allowing faster file access (O(1), usually just one disk read operation).
 There is only 40 bytes of disk storage overhead for each file's metadata. 
 It is so simple with O(1) disk reads that you are welcome to challenge the performance with your actual use cases.
 
-SeaweedFS started by implementing [Facebook's Haystack design paper](http://www.usenix.org/event/osdi10/tech/full_papers/Beaver.pdf). 
-Also, SeaweedFS implements erasure coding with ideas from 
+Meliclaw DSS started by implementing [Facebook's Haystack design paper](http://www.usenix.org/event/osdi10/tech/full_papers/Beaver.pdf). 
+Also, Meliclaw DSS implements erasure coding with ideas from 
 [f4: Facebook’s Warm BLOB Storage System](https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-muralidhar.pdf), and has a lot of similarities with [Facebook’s Tectonic Filesystem](https://www.usenix.org/system/files/fast21-pan.pdf) and [Google's Colossus File System](https://cloud.google.com/blog/products/storage-data-transfer/a-peek-behind-colossus-googles-file-system)
 
 On top of the blob store, optional [Filer] can support directories and POSIX attributes. 
 Filer is a separate linearly-scalable stateless server with customizable metadata stores, 
 e.g., MySql, Postgres, Redis, Cassandra, HBase, Mongodb, Elastic Search, LevelDB, RocksDB, Sqlite, MemSql, TiDB, Etcd, CockroachDB, YDB, etc.
 
-SeaweedFS can transparently integrate with the cloud. 
+Meliclaw DSS can transparently integrate with the cloud. 
 With hot data on local cluster, and warm data on the cloud with O(1) access time, 
-SeaweedFS can achieve both fast local access time and elastic cloud storage capacity.
+Meliclaw DSS can achieve both fast local access time and elastic cloud storage capacity.
 What's more, the cloud storage access API cost is minimized. 
 Faster and cheaper than direct cloud storage!
 
-SeaweedFS also ships a built-in **Iceberg REST Catalog**, turning the same cluster into a self-contained lakehouse.
+Meliclaw DSS also ships a built-in **Iceberg REST Catalog**, turning the same cluster into a self-contained lakehouse.
 Spark, Trino, Dremio, DuckDB, and RisingWave can query Iceberg tables directly — no Hive Metastore, Glue, or
 external catalog service required. Storage and table metadata live in one system, simplifying on-prem and
 small-team analytics stacks.
@@ -235,7 +234,7 @@ small-team analytics stacks.
 By default, the master node runs on port 9333, and the volume nodes run on port 8080.
 Let's start one master node, and two volume nodes on port 8080 and 8081. Ideally, they should be started from different machines. We'll use localhost as an example.
 
-SeaweedFS uses HTTP REST operations to read, write, and delete. The responses are in JSON or JSONP format.
+Meliclaw DSS uses HTTP REST operations to read, write, and delete. The responses are in JSON or JSONP format.
 
 ### Start Master Server ###
 
@@ -331,7 +330,7 @@ http://localhost:8080/3/01637037d6.jpg?height=200&width=200&mode=fill
 
 ### Rack-Aware and Data Center-Aware Replication ###
 
-SeaweedFS applies the replication strategy at a volume level. So, when you are getting a blob id, you can specify the replication strategy. For example:
+Meliclaw DSS applies the replication strategy at a volume level. So, when you are getting a blob id, you can specify the replication strategy. For example:
 
 ```
 curl http://localhost:9333/dir/assign?replication=001
@@ -388,7 +387,7 @@ Usually distributed file systems split each file into chunks. A central server k
 
 The main drawback is that the central server can't handle many small files efficiently, and since all read requests need to go through the central master, so it might not scale well for many concurrent users.
 
-Instead of managing chunks, SeaweedFS manages data volumes in the master server. Each data volume is 32GB in size, and can hold a lot of blobs. And each storage node can have many data volumes. So the master node only needs to store the metadata about the volumes, which is a fairly small amount of data and is generally stable.
+Instead of managing chunks, Meliclaw DSS manages data volumes in the master server. Each data volume is 32GB in size, and can hold a lot of blobs. And each storage node can have many data volumes. So the master node only needs to store the metadata about the volumes, which is a fairly small amount of data and is generally stable.
 
 The actual blob metadata, which are the blob volume, offset, and size, is stored in each volume on volume servers. Since each volume server only manages metadata of blobs on its own disk, with only 16 bytes for each blob, all access can read the metadata just from memory and only needs one disk operation to actually read file data.
 
@@ -414,9 +413,9 @@ All blob metadata stored on a volume server is readable from memory without disk
 
 ### Tiered Storage to the cloud ###
 
-The local volume servers are much faster, while cloud storages have elastic capacity and are actually more cost-efficient if not accessed often (usually free to upload, but relatively costly to access). With the append-only structure and O(1) access time, SeaweedFS can take advantage of both local and cloud storage by offloading the warm data to the cloud.
+The local volume servers are much faster, while cloud storages have elastic capacity and are actually more cost-efficient if not accessed often (usually free to upload, but relatively costly to access). With the append-only structure and O(1) access time, Meliclaw DSS can take advantage of both local and cloud storage by offloading the warm data to the cloud.
 
-Usually hot data are fresh and warm data are old. SeaweedFS puts the newly created volumes on local servers, and optionally upload the older volumes on the cloud. If the older data are accessed less often, this literally gives you unlimited capacity with limited local servers, and still fast for new data. 
+Usually hot data are fresh and warm data are old. Meliclaw DSS puts the newly created volumes on local servers, and optionally upload the older volumes on the cloud. If the older data are accessed less often, this literally gives you unlimited capacity with limited local servers, and still fast for new data. 
 
 With the O(1) access time, the network latency cost is kept at minimum. 
 
@@ -424,9 +423,9 @@ If the hot/warm data is split as 20/80, with 20 servers, you can achieve storage
 
 [Back to TOC](#table-of-contents)
 
-## SeaweedFS Filer ##
+## Meliclaw DSS Filer ##
 
-Built on top of the blob store, SeaweedFS Filer adds directory structure to create a file system. The directory structure is an interface that is implemented in many key-value stores or databases.
+Built on top of the blob store, Meliclaw DSS Filer adds directory structure to create a file system. The directory structure is an interface that is implemented in many key-value stores or databases.
 
 The content of a file is mapped to one or many blobs, distributed to multiple volumes on multiple volume servers.
 
@@ -434,9 +433,9 @@ The content of a file is mapped to one or many blobs, distributed to multiple vo
 
 Most other distributed file systems seem more complicated than necessary.
 
-SeaweedFS is meant to be fast and simple, in both setup and operation. If you do not understand how it works when you reach here, we've failed! Please raise an issue with any questions or update this file with clarifications.
+Meliclaw DSS is meant to be fast and simple, in both setup and operation. If you do not understand how it works when you reach here, we've failed! Please raise an issue with any questions or update this file with clarifications.
 
-SeaweedFS is constantly moving forward. Same with other systems. These comparisons can be outdated quickly. Please help to keep them updated.
+Meliclaw DSS is constantly moving forward. Same with other systems. These comparisons can be outdated quickly. Please help to keep them updated.
 
 [Back to TOC](#table-of-contents)
 
@@ -444,25 +443,25 @@ SeaweedFS is constantly moving forward. Same with other systems. These compariso
 
 HDFS uses the chunk approach for each file, and is ideal for storing large files.
 
-SeaweedFS is ideal for serving relatively smaller files quickly and concurrently.
+Meliclaw DSS is ideal for serving relatively smaller files quickly and concurrently.
 
-SeaweedFS can also store extra large files by splitting them into manageable data chunks, and store the file ids of the data chunks into a meta chunk. This is managed by "weed upload/download" tool, and the weed master or volume servers are agnostic about it.
+Meliclaw DSS can also store extra large files by splitting them into manageable data chunks, and store the file ids of the data chunks into a meta chunk. This is managed by "weed upload/download" tool, and the weed master or volume servers are agnostic about it.
 
 [Back to TOC](#table-of-contents)
 
 ### Compared to GlusterFS, Ceph ###
 
-The architectures are mostly the same. SeaweedFS aims to store and read files fast, with a simple and flat architecture. The main differences are
+The architectures are mostly the same. Meliclaw DSS aims to store and read files fast, with a simple and flat architecture. The main differences are
 
-* SeaweedFS optimizes for small files, ensuring O(1) disk seek operation, and can also handle large files.
-* SeaweedFS statically assigns a volume id for a file. Locating file content becomes just a lookup of the volume id, which can be easily cached.
-* SeaweedFS Filer metadata store can be any well-known and proven data store, e.g., Redis, Cassandra, HBase, Mongodb, Elastic Search, MySql, Postgres, Sqlite, MemSql, TiDB, CockroachDB, Etcd, YDB etc, and is easy to customize.
-* SeaweedFS Volume server also communicates directly with clients via HTTP, supporting range queries, direct uploads, etc.
+* Meliclaw DSS optimizes for small files, ensuring O(1) disk seek operation, and can also handle large files.
+* Meliclaw DSS statically assigns a volume id for a file. Locating file content becomes just a lookup of the volume id, which can be easily cached.
+* Meliclaw DSS Filer metadata store can be any well-known and proven data store, e.g., Redis, Cassandra, HBase, Mongodb, Elastic Search, MySql, Postgres, Sqlite, MemSql, TiDB, CockroachDB, Etcd, YDB etc, and is easy to customize.
+* Meliclaw DSS Volume server also communicates directly with clients via HTTP, supporting range queries, direct uploads, etc.
 
 | System         | File Metadata                   | File Content Read| POSIX  | REST API | Optimized for large number of small files |
 | -------------  | ------------------------------- | ---------------- | ------ | -------- | ------------------------- |
-| SeaweedFS      | lookup volume id, cacheable     | O(1) disk seek   |        | Yes      | Yes                       |
-| SeaweedFS Filer| Linearly Scalable, Customizable | O(1) disk seek   | FUSE   | Yes      | Yes                       |
+| Meliclaw DSS      | lookup volume id, cacheable     | O(1) disk seek   |        | Yes      | Yes                       |
+| Meliclaw DSS Filer| Linearly Scalable, Customizable | O(1) disk seek   | FUSE   | Yes      | Yes                       |
 | GlusterFS      | hashing          |                  | FUSE, NFS          |          |                           |
 | Ceph           | hashing + rules  |                  | FUSE               | Yes      |                           |
 | MooseFS        | in memory        |                  | FUSE               |       | No                          |
@@ -489,19 +488,19 @@ MooseFS Master Server keeps all meta data in memory. Same issue as HDFS namenode
 
 ### Compared to Ceph ###
 
-Ceph can be setup similar to SeaweedFS as a key->blob store. It is much more complicated, with the need to support layers on top of it. [Here is a more detailed comparison](https://github.com/seaweedfs/seaweedfs/issues/120)
+Ceph can be setup similar to Meliclaw DSS as a key->blob store. It is much more complicated, with the need to support layers on top of it. [Here is a more detailed comparison](https://github.com/seaweedfs/seaweedfs/issues/120)
 
-SeaweedFS has a centralized master group to look up free volumes, while Ceph uses hashing and metadata servers to locate its objects. Having a centralized master makes it easy to code and manage.
+Meliclaw DSS has a centralized master group to look up free volumes, while Ceph uses hashing and metadata servers to locate its objects. Having a centralized master makes it easy to code and manage.
 
-Ceph, like SeaweedFS, is based on the object store RADOS. Ceph is rather complicated with mixed reviews.
+Ceph, like Meliclaw DSS, is based on the object store RADOS. Ceph is rather complicated with mixed reviews.
 
-Ceph uses CRUSH hashing to automatically manage data placement, which is efficient to locate the data. But the data has to be placed according to the CRUSH algorithm. Any wrong configuration would cause data loss. Topology changes, such as adding new servers to increase capacity, will cause data migration with high IO cost to fit the CRUSH algorithm. SeaweedFS places data by assigning them to any writable volumes. If writes to one volume failed, just pick another volume to write. Adding more volumes is also as simple as it can be.
+Ceph uses CRUSH hashing to automatically manage data placement, which is efficient to locate the data. But the data has to be placed according to the CRUSH algorithm. Any wrong configuration would cause data loss. Topology changes, such as adding new servers to increase capacity, will cause data migration with high IO cost to fit the CRUSH algorithm. Meliclaw DSS places data by assigning them to any writable volumes. If writes to one volume failed, just pick another volume to write. Adding more volumes is also as simple as it can be.
 
-SeaweedFS is optimized for small files. Small files are stored as one continuous block of content, with at most 8 unused bytes between files. Small file access is O(1) disk read.
+Meliclaw DSS is optimized for small files. Small files are stored as one continuous block of content, with at most 8 unused bytes between files. Small file access is O(1) disk read.
 
-SeaweedFS Filer uses off-the-shelf stores, such as MySql, Postgres, Sqlite, Mongodb, Redis, Elastic Search, Cassandra, HBase, MemSql, TiDB, CockroachCB, Etcd, YDB, to manage file directories. These stores are proven, scalable, and easier to manage.
+Meliclaw DSS Filer uses off-the-shelf stores, such as MySql, Postgres, Sqlite, Mongodb, Redis, Elastic Search, Cassandra, HBase, MemSql, TiDB, CockroachCB, Etcd, YDB, to manage file directories. These stores are proven, scalable, and easier to manage.
 
-| SeaweedFS         | comparable to Ceph | advantage |
+| Meliclaw DSS         | comparable to Ceph | advantage |
 | -------------  | ------------- | ---------------- |
 | Master  | MDS | simpler |
 | Volume  | OSD | optimized for small files |
@@ -513,20 +512,20 @@ SeaweedFS Filer uses off-the-shelf stores, such as MySql, Postgres, Sqlite, Mong
 
 Please note, as Apr 25, 2026 MinIO ceased development. It's strongly discouraged to use that unmaintained software with multiple security bugs. RustFS is a MinIO reimplementation in Rust, Apache 2.0 licensed and still developed, keeping MinIO's storage model down to a byte-compatible on-disk format. So the points below apply to both.
 
-MinIO followed AWS S3 closely and was ideal for testing for S3 API. It had good UI, policies, versionings, etc. SeaweedFS is trying to catch up here. 
+MinIO followed AWS S3 closely and was ideal for testing for S3 API. It had good UI, policies, versionings, etc. Meliclaw DSS is trying to catch up here. 
 
 The metadata are in simple files. Each file write incurs extra writes to the corresponding meta file, on every drive of the erasure set. Changing only tags or retention rewrites that meta file on all of them, so the write amplification does not shrink with object size.
 
 There is no optimization for lots of small files. The files are simply stored as is to local disks.
 Plus the extra meta file and shards for erasure coding, it only amplifies the LOSF problem.
 
-Multiple disk IO are needed to read one file. SeaweedFS has O(1) disk reads, even for erasure coded files.
+Multiple disk IO are needed to read one file. Meliclaw DSS has O(1) disk reads, even for erasure coded files.
 
-Erasure coding is full-time. SeaweedFS uses replication on hot data for faster speed and optionally applies erasure coding on warm data.
+Erasure coding is full-time. Meliclaw DSS uses replication on hot data for faster speed and optionally applies erasure coding on warm data.
 
 No POSIX-like API support.
 
-There are specific requirements on storage layout, which makes it hard to scale out and to maintain. An erasure set must be 2 to 16 drives and must divide the drive list symmetrically, and capacity grows or shrinks a whole pool at a time. In SeaweedFS, just start one volume server pointing to the master. That's all.
+There are specific requirements on storage layout, which makes it hard to scale out and to maintain. An erasure set must be 2 to 16 drives and must divide the drive list symmetrically, and capacity grows or shrinks a whole pool at a time. In Meliclaw DSS, just start one volume server pointing to the master. That's all.
 
 [Back to TOC](#table-of-contents)
 
@@ -571,11 +570,11 @@ For more installation options, including how to run with Docker, see the [Gettin
 
 ### Hard Drive Performance ###
 
-When testing read performance on SeaweedFS, it basically becomes a performance test of your hard drive's random read speed. Hard drives usually get 100MB/s~200MB/s.
+When testing read performance on Meliclaw DSS, it basically becomes a performance test of your hard drive's random read speed. Hard drives usually get 100MB/s~200MB/s.
 
 ### Solid State Disk ###
 
-To modify or delete small files, SSD must delete a whole block at a time, and move content in existing blocks to a new block. SSD is fast when brand new, but will get fragmented over time and you have to garbage collect, compacting blocks. SeaweedFS is friendly to SSD since it is append-only. Deletion and compaction are done on volume level in the background, not slowing reading and not causing fragmentation.
+To modify or delete small files, SSD must delete a whole block at a time, and move content in existing blocks to a new block. SSD is fast when brand new, but will get fragmented over time and you have to garbage collect, compacting blocks. Meliclaw DSS is friendly to SSD since it is append-only. Deletion and compaction are done on volume level in the background, not slowing reading and not causing fragmentation.
 
 [Back to TOC](#table-of-contents)
 
