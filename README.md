@@ -1,5 +1,11 @@
 # Meliclaw DSS
 
+Operational documentation for local OrbStack and Scaleway VPS deployment lives in:
+
+- `specs/README.md`
+- `specs/tech/Meliclaw_DSS_Deployment_Runbook.md`
+- `specs/tech/Meliclaw_DSS_Operations_Spec.md`
+
 
 [![Slack](https://img.shields.io/badge/slack-purple)](https://join.slack.com/t/seaweedfs/shared_invite/enQtMzI4MTMwMjU2MzA3LTEyYzZmZWYzOGQ3MDJlZWMzYmI0OTE4OTJiZjJjODBmMzUxNmYwODg0YjY3MTNlMjBmZDQ1NzQ5NDJhZWI2ZmY)
 [![Twitter](https://img.shields.io/twitter/follow/seaweedfs.svg?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=seaweedfs)
